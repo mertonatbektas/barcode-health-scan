@@ -1,54 +1,44 @@
- codex/check-repo-status-and-update-readme.md-o5l5my
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import ProductView from '../components/ProductView';
-import { getProduct } from '../lib/api';
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getScan } from "../lib/api.js";
+import ProductView from "../components/ProductView.jsx";
 
-function Product() {
+export default function Product() {
   const { barcode } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let active = true;
+    let alive = true;
 
-    async function fetchData() {
-      setLoading(true);
+    async function run() {
       try {
-        const result = await getProduct(barcode);
-        if (active) setData(result);
-      } catch (error) {
-        toast.error(error.message || 'Ürün getirilirken hata oluştu');
-        if (active) setData(null);
+        setLoading(true);
+        const res = await getScan(barcode);
+        if (alive) setData(res);
+      } catch (e) {
+        toast.error("Ürün bulunamadı veya hata oldu.");
       } finally {
-        if (active) setLoading(false);
+        if (alive) setLoading(false);
       }
     }
 
-    fetchData();
-
-    return () => {
-      active = false;
-    };
+    run();
+    return () => { alive = false; };
   }, [barcode]);
 
   return (
-    <section className="mx-auto max-w-3xl p-6">
-      {loading ? <p>Yükleniyor...</p> : <ProductView barcode={barcode} data={data} />}
-=======
-import { useParams } from 'react-router-dom';
-import ProductView from '../components/ProductView';
+    <div className="space-y-4">
+      <Link to="/" className="text-sm text-gray-600 hover:underline">← Geri</Link>
 
-function Product() {
-  const { barcode } = useParams();
-
-  return (
-    <section className="mx-auto max-w-3xl p-6">
-      <ProductView barcode={barcode} />
- main
-    </section>
+      {loading ? (
+        <div className="rounded-xl border p-4">Yükleniyor...</div>
+      ) : data ? (
+        <ProductView data={data} />
+      ) : (
+        <div className="rounded-xl border p-4">Sonuç yok.</div>
+      )}
+    </div>
   );
 }
-
-export default Product;

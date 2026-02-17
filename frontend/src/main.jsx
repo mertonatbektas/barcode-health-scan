@@ -1,22 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
- codex/check-repo-status-and-update-readme.md-o5l5my
-import { ToastContainer } from 'react-toastify';
-import router from './router';
-import './styles/index.css';
-import 'react-toastify/dist/ReactToastify.css';
-=======
-import router from './router';
-import './styles/index.css';
- main
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+import router from "./router.jsx";
+import "react-toastify/dist/ReactToastify.css";
+import "./styles/index.css";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RouterProvider router={router} />
- codex/check-repo-status-and-update-readme.md-o5l5my
-    <ToastContainer position="top-right" autoClose={3000} />
-=======
- main
+    <ToastContainer position="top-right" autoClose={2500} />
   </React.StrictMode>
 );

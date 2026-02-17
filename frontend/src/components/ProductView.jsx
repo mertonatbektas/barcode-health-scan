@@ -1,5 +1,6 @@
-import HealthBadges from './HealthBadges';
+import HealthBadges from "./HealthBadges.jsx";
 
+ codex/improve-productview-design-with-tailwind-8rtk9m
 function ProductView({ barcode, data }) {
   if (!data?.product) {
     return (
@@ -8,10 +9,15 @@ function ProductView({ barcode, data }) {
       </p>
     );
   }
+export default function ProductView({ data }) {
+  const product = data?.product;
 
-  const { product, flags = [], score = 0 } = data;
+  if (!product) {
+    return <div className="rounded-xl border p-4">Ürün yok.</div>;
+  }
 
   return (
+ codex/improve-productview-design-with-tailwind-8rtk9m
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/70 sm:p-6">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex-1 space-y-3">
@@ -36,10 +42,37 @@ function ProductView({ barcode, data }) {
               alt={product.name || 'Ürün görseli'}
               className="h-32 w-full rounded-lg object-cover sm:h-28"
             />
+    <article className="space-y-4">
+      <div className="rounded-xl border p-4 space-y-2">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-semibold">
+              {product.name || "İsimsiz ürün"}
+            </h1>
+            <p className="text-sm text-gray-600">
+              {product.brand ? `Marka: ${product.brand}` : "Marka yok"}
+            </p>
+            <p className="text-sm text-gray-600">Barkod: {product.barcode}</p>
+          </div>
+
+          {product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.name || "Ürün"}
+              className="h-24 w-24 rounded-lg object-cover border"
+            />
+          ) : null}
+        </div>
+
+        {product.ingredientsText ? (
+          <div className="pt-2">
+            <h2 className="font-medium">İçindekiler</h2>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap">
+              {product.ingredientsText}
+            </p>
           </div>
         ) : null}
       </div>
-
       <div className="mt-5 space-y-2 rounded-xl border border-slate-100 bg-slate-50/70 p-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">İçindekiler</h2>
         <p className="text-sm leading-relaxed text-slate-700">{product.ingredients || '-'}</p>
@@ -84,8 +117,16 @@ function ProductView({ barcode, data }) {
       <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
         <HealthBadges score={score} />
       </div>
+      <HealthBadges flags={data.flags || []} score={data.score ?? 0} />
+
+      <div className="rounded-xl border p-4">
+        <h2 className="font-medium mb-2">Besin Değerleri (100g)</h2>
+        <ul className="text-sm text-gray-700 space-y-1">
+          <li>Şeker: {product.nutriments?.sugar_100g ?? "-"} g</li>
+          <li>Tuz: {product.nutriments?.salt_100g ?? "-"} g</li>
+          <li>Enerji: {product.nutriments?.energy_kcal_100g ?? "-"} kcal</li>
+        </ul>
+      </div>
     </article>
   );
 }
-
-export default ProductView;
