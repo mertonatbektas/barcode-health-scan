@@ -1,35 +1,79 @@
 import HealthBadges from './HealthBadges';
 
- codex/check-repo-status-and-update-readme.md-o5l5my
 function ProductView({ barcode, data }) {
   if (!data?.product) {
-    return <p className="text-slate-600">Ürün bilgisi bulunamadı.</p>;
+    return (
+      <p className="rounded-2xl border border-slate-200 bg-white/90 p-4 text-sm text-slate-600 shadow-sm">
+        Ürün bilgisi bulunamadı.
+      </p>
+    );
   }
 
   const { product, flags = [], score = 0 } = data;
 
   return (
-    <article className="space-y-4 rounded-xl bg-white p-4 shadow">
-      <h1 className="text-xl font-semibold">{product.name || 'İsimsiz ürün'}</h1>
-      <p className="text-sm text-slate-600">Marka: {product.brand || '-'}</p>
-      <p className="text-sm text-slate-600">Barkod: {barcode}</p>
+    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/70 sm:p-6">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex-1 space-y-3">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            {product.name || 'İsimsiz ürün'}
+          </h1>
 
-      {product.image ? (
-        <img
-          src={product.image}
-          alt={product.name || 'Product image'}
-          className="h-48 w-48 rounded object-cover"
-        />
-      ) : null}
+          <div className="grid gap-2 text-sm sm:grid-cols-2">
+            <p className="rounded-lg bg-slate-50 px-3 py-2 text-slate-700">
+              <span className="font-medium text-slate-900">Marka:</span> {product.brand || '-'}
+            </p>
+            <p className="rounded-lg bg-slate-50 px-3 py-2 text-slate-700">
+              <span className="font-medium text-slate-900">Barkod:</span> {barcode}
+            </p>
+          </div>
+        </div>
 
-      <p className="text-sm">İçindekiler: {product.ingredients || '-'}</p>
+        {product.image ? (
+          <div className="w-full shrink-0 rounded-xl border border-slate-200 bg-slate-50 p-2 shadow-sm sm:w-40">
+            <img
+              src={product.image}
+              alt={product.name || 'Ürün görseli'}
+              className="h-32 w-full rounded-lg object-cover sm:h-28"
+            />
+          </div>
+        ) : null}
+      </div>
 
-      <div className="space-y-2">
-        <h2 className="font-medium">Uyarılar</h2>
+      <div className="mt-5 space-y-2 rounded-xl border border-slate-100 bg-slate-50/70 p-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">İçindekiler</h2>
+        <p className="text-sm leading-relaxed text-slate-700">{product.ingredients || '-'}</p>
+      </div>
+
+      <div className="mt-5">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">
+          Besin Değerleri (100g)
+        </h2>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Enerji</p>
+            <p className="mt-1 text-lg font-semibold text-slate-900">{product.nutrition?.energy ?? '-'} kcal</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Şeker</p>
+            <p className="mt-1 text-lg font-semibold text-slate-900">{product.nutrition?.sugar ?? '-'} g</p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Protein</p>
+            <p className="mt-1 text-lg font-semibold text-slate-900">{product.nutrition?.protein ?? '-'} g</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-700">Uyarılar</h2>
         {flags.length ? (
-          <ul className="list-disc pl-5 text-sm text-amber-700">
+          <ul className="space-y-1 text-sm text-amber-700">
             {flags.map((flag) => (
-              <li key={flag}>{flag}</li>
+              <li key={flag} className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-amber-500" />
+                <span>{flag}</span>
+              </li>
             ))}
           </ul>
         ) : (
@@ -37,15 +81,9 @@ function ProductView({ barcode, data }) {
         )}
       </div>
 
-      <HealthBadges score={score} />
-=======
-function ProductView({ barcode }) {
-  return (
-    <article className="space-y-4">
-      <h1 className="text-xl font-semibold">Ürün: {barcode}</h1>
-      <p className="text-sm text-slate-600">Ürün detayları burada gösterilecek.</p>
-      <HealthBadges score={0} />
- main
+      <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <HealthBadges score={score} />
+      </div>
     </article>
   );
 }
