@@ -1,3 +1,4 @@
+ codex/check-repo-status-and-update-readme.md-o5l5my
 const { OFF_BASE_URL } = require('../config/env');
 
 function normalizeNutrients(nutriments = {}) {
@@ -38,6 +39,10 @@ async function fetchProductByBarcode(barcode) {
   }
 
   return mapProduct(data.product);
+=======
+async function fetchProductByBarcode() {
+  return { product: null };
+ main
 }
 
 module.exports = { fetchProductByBarcode };

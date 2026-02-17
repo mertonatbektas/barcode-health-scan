@@ -1,3 +1,4 @@
+ codex/check-repo-status-and-update-readme.md-o5l5my
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -35,6 +36,17 @@ function Product() {
   return (
     <section className="mx-auto max-w-3xl p-6">
       {loading ? <p>Yükleniyor...</p> : <ProductView barcode={barcode} data={data} />}
+=======
+import { useParams } from 'react-router-dom';
+import ProductView from '../components/ProductView';
+
+function Product() {
+  const { barcode } = useParams();
+
+  return (
+    <section className="mx-auto max-w-3xl p-6">
+      <ProductView barcode={barcode} />
+ main
     </section>
   );
 }

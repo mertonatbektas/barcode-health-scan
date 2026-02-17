@@ -1,3 +1,4 @@
+ codex/check-repo-status-and-update-readme.md-o5l5my
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000';
 
 export async function getProduct(barcode) {
@@ -16,4 +17,12 @@ export async function getProduct(barcode) {
   }
 
   return payload;
+=======
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
+export async function getProduct(barcode) {
+  const response = await fetch(`${API_BASE_URL}/scan?barcode=${encodeURIComponent(barcode)}`);
+  if (!response.ok) throw new Error('API request failed');
+  return response.json();
+main
 }

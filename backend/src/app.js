@@ -1,4 +1,5 @@
 const http = require('http');
+ codex/check-repo-status-and-update-readme.md-o5l5my
 const { scanController, sendJson } = require('./controllers/scanController');
 
 const app = http.createServer(async (req, res) => {
@@ -15,6 +16,13 @@ const app = http.createServer(async (req, res) => {
   }
 
   return sendJson(res, 404, { error: 'Route not found' });
+=======
+
+const app = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({ status: 'ok' }));
+ main
 });
 
 module.exports = app;

@@ -1,3 +1,4 @@
+ codex/check-repo-status-and-update-readme.md-o5l5my
 const { fetchProductByBarcode } = require('../services/openFoodFactsService');
 const { evaluateProductHealth } = require('../services/healthRulesService');
 const { isValidBarcode } = require('../utils/validate');
@@ -39,3 +40,12 @@ async function scanController(req, res, barcode) {
 }
 
 module.exports = { scanController, sendJson };
+=======
+function scanController(req, res) {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({ message: 'scan endpoint placeholder' }));
+}
+
+module.exports = { scanController };
+ main

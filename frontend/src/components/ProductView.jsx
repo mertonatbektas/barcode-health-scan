@@ -1,5 +1,6 @@
 import HealthBadges from './HealthBadges';
 
+ codex/check-repo-status-and-update-readme.md-o5l5my
 function ProductView({ barcode, data }) {
   if (!data?.product) {
     return <p className="text-slate-600">Ürün bilgisi bulunamadı.</p>;
@@ -37,6 +38,14 @@ function ProductView({ barcode, data }) {
       </div>
 
       <HealthBadges score={score} />
+=======
+function ProductView({ barcode }) {
+  return (
+    <article className="space-y-4">
+      <h1 className="text-xl font-semibold">Ürün: {barcode}</h1>
+      <p className="text-sm text-slate-600">Ürün detayları burada gösterilecek.</p>
+      <HealthBadges score={0} />
+ main
     </article>
   );
 }
