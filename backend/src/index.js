@@ -1,11 +1,9 @@
-const app = require('./app');
- codex/check-repo-status-and-update-readme.md-o5l5my
-const { PORT } = require('./config/env');
-=======
+import { createApp } from "./app.js";
+import { loadEnv } from "./config/env.js";
 
-const PORT = process.env.PORT || 3000;
- main
+const env = loadEnv();
+const app = createApp(env);
 
-app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+app.listen(env.PORT, () => {
+  console.log(`✅ API running on http://localhost:${env.PORT}`);
 });

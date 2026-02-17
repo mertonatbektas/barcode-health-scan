@@ -1,15 +1,10 @@
- codex/check-repo-status-and-update-readme.md-o5l5my
-const scanRoutes = {
-  method: 'GET',
-  path: '/api/scan/:barcode'
-};
-=======
-const scanRoutes = [
-  {
-    method: 'POST',
-    path: '/scan'
-  }
-];
- main
+import { Router } from "express";
+import { scanController } from "../controllers/scanController.js";
 
-module.exports = scanRoutes;
+export default function scanRoutes(env) {
+  const router = Router();
+
+  router.get("/scan/:barcode", scanController(env));
+
+  return router;
+}

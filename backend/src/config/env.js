@@ -1,11 +1,11 @@
-const env = {
-  NODE_ENV: process.env.NODE_ENV || 'development',
- codex/check-repo-status-and-update-readme.md-o5l5my
-  PORT: Number(process.env.PORT || 3000),
-  OFF_BASE_URL: process.env.OFF_BASE_URL || 'https://world.openfoodfacts.org'
-=======
-  PORT: Number(process.env.PORT || 3000)
- main
-};
+import dotenv from "dotenv";
 
-module.exports = env;
+dotenv.config();
+
+export function loadEnv() {
+  const PORT = Number(process.env.PORT || 4000);
+  const OFF_BASE_URL = process.env.OFF_BASE_URL || "https://world.openfoodfacts.org";
+  const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+
+  return { PORT, OFF_BASE_URL, CORS_ORIGIN };
+}

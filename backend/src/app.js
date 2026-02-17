@@ -1,28 +1,37 @@
-const http = require('http');
- codex/check-repo-status-and-update-readme.md-o5l5my
-const { scanController, sendJson } = require('./controllers/scanController');
+import express from "express";
+import cors from "cors";
+import healthRoutes from "./routes/healthRoutes.js";
+import scanRoutes from "./routes/scanRoutes.js";
 
-const app = http.createServer(async (req, res) => {
-  const url = new URL(req.url, 'http://localhost');
-  const { pathname } = url;
+export function createApp(env) {
+  const app = express();
 
-  if (req.method === 'GET' && pathname === '/api/health') {
-    return sendJson(res, 200, { ok: true });
-  }
+  app.use(express.json());
 
-  if (req.method === 'GET' && pathname.startsWith('/api/scan/')) {
-    const barcode = pathname.replace('/api/scan/', '').trim();
-    return scanController(req, res, barcode);
-  }
+  app.use(
+    cors({
+      origin: env.CORS_ORIGIN ? env.CORS_ORIGIN.split(",").map((s) => s.trim()) : true,
+      credentials: true
+    })
+  );
 
-  return sendJson(res, 404, { error: 'Route not found' });
-=======
+  app.use("/api", healthRoutes);
+  app.use("/api", scanRoutes(env));
 
-const app = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ status: 'ok' }));
- main
-});
+  // 404
+  app.use((req, res) => {
+    res.status(404).json({ error: "NOT_FOUND" });
+  });
 
-module.exports = app;
+  // error handler
+  // eslint-disable-next-line no-unused-vars
+  app.use((err, req, res, next) => {
+    console.error("❌ ERROR:", err);
+    res.status(err.status || 500).json({
+      error: err.code || "SERVER_ERROR",
+      message: err.message || "Something went wrong"
+    });
+  });
+
+  return app;
+}

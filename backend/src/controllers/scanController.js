@@ -1,51 +1,29 @@
- codex/check-repo-status-and-update-readme.md-o5l5my
-const { fetchProductByBarcode } = require('../services/openFoodFactsService');
-const { evaluateProductHealth } = require('../services/healthRulesService');
-const { isValidBarcode } = require('../utils/validate');
+import { isValidBarcode } from "../utils/validate.js";
+import { fetchProductFromOFF } from "../services/openFoodFactsService.js";
+import { runHealthRules } from "../services/healthRulesService.js";
 
-function sendJson(res, statusCode, payload) {
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(payload));
-}
+export function scanController(env) {
+  return async (req, res, next) => {
+    try {
+      const barcode = String(req.params.barcode || "").trim();
 
-async function scanController(req, res, barcode) {
-  if (!isValidBarcode(barcode)) {
-    return sendJson(res, 400, {
-      error: 'Invalid barcode. Barcode must be 8 to 14 digits long.'
-    });
-  }
+      if (!isValidBarcode(barcode)) {
+        return res.status(400).json({
+          error: "INVALID_BARCODE",
+          message: "Barkod 8-14 haneli ve sadece rakam olmalı."
+        });
+      }
 
-  try {
-    const product = await fetchProductByBarcode(barcode);
+      const product = await fetchProductFromOFF(env.OFF_BASE_URL, barcode);
 
-    if (!product) {
-      return sendJson(res, 404, { error: 'Product not found' });
+      if (!product) {
+        return res.status(404).json({ error: "PRODUCT_NOT_FOUND", barcode });
+      }
+
+      const result = runHealthRules(product);
+      return res.json(result);
+    } catch (err) {
+      return next(err);
     }
-
-    const health = evaluateProductHealth(product);
-
-    return sendJson(res, 200, {
-      barcode,
-      product,
-      score: health.score,
-      flags: health.flags
-    });
-  } catch (error) {
-    return sendJson(res, 502, {
-      error: 'Failed to fetch product data from OpenFoodFacts',
-      details: error.message
-    });
-  }
+  };
 }
-
-module.exports = { scanController, sendJson };
-=======
-function scanController(req, res) {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ message: 'scan endpoint placeholder' }));
-}
-
-module.exports = { scanController };
- main

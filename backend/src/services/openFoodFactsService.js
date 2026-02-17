@@ -1,48 +1,39 @@
- codex/check-repo-status-and-update-readme.md-o5l5my
-const { OFF_BASE_URL } = require('../config/env');
+function safeNumber(x) {
+  const n = Number(x);
+  return Number.isFinite(n) ? n : undefined;
+}
 
-function normalizeNutrients(nutriments = {}) {
+export async function fetchProductFromOFF(baseUrl, barcode) {
+  const url = `${baseUrl}/api/v2/product/${encodeURIComponent(barcode)}.json`;
+
+  const resp = await fetch(url, {
+    method: "GET",
+    headers: { "User-Agent": "barcode-health-scan/1.0" }
+  });
+
+  if (!resp.ok) return null;
+
+  const data = await resp.json();
+  if (!data || data.status !== 1 || !data.product) return null;
+
+  const p = data.product;
+
   return {
-    sugar: nutriments.sugars_100g ?? null,
-    salt: nutriments.salt_100g ?? null,
-    energy:
-      nutriments['energy-kcal_100g'] ??
-      nutriments.energy_kcal_100g ??
-      nutriments.energy_100g ??
-      null
+    barcode,
+    name: p.product_name || p.product_name_en || undefined,
+    brand: Array.isArray(p.brands_tags) ? p.brands_tags[0] : (p.brands || undefined),
+    imageUrl: p.image_front_url || p.image_url || undefined,
+    ingredientsText: p.ingredients_text || p.ingredients_text_en || undefined,
+    nutriments: {
+      sugar_100g: safeNumber(p.nutriments?.sugars_100g),
+      salt_100g: safeNumber(p.nutriments?.salt_100g),
+      energy_kcal_100g: safeNumber(
+        p.nutriments?.["energy-kcal_100g"] ?? p.nutriments?.energy_kcal_100g
+      )
+    },
+    allergens: typeof p.allergens === "string"
+      ? p.allergens.split(",").map((s) => s.trim()).filter(Boolean)
+      : [],
+    additives: Array.isArray(p.additives_tags) ? p.additives_tags : []
   };
 }
-
-function mapProduct(product) {
-  return {
-    name: product.product_name || null,
-    brand: product.brands || null,
-    image: product.image_url || product.image_front_url || null,
-    ingredients: product.ingredients_text || null,
-    nutrients: normalizeNutrients(product.nutriments),
-    allergens: product.allergens || product.allergens_from_ingredients || null,
-    additives: Array.isArray(product.additives_tags) ? product.additives_tags : []
-  };
-}
-
-async function fetchProductByBarcode(barcode) {
-  const response = await fetch(`${OFF_BASE_URL}/api/v0/product/${barcode}.json`);
-
-  if (!response.ok) {
-    throw new Error(`OpenFoodFacts request failed with status ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  if (data.status !== 1 || !data.product) {
-    return null;
-  }
-
-  return mapProduct(data.product);
-=======
-async function fetchProductByBarcode() {
-  return { product: null };
- main
-}
-
-module.exports = { fetchProductByBarcode };
